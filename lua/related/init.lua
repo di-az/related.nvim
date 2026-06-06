@@ -1,36 +1,18 @@
 local M = {}
 
-local function exists(path)
-	return vim.fn.filereadable(path) == 1
-end
+local config = require("related.config")
+local go = require("related.go")
 
-local function is_test_file(path)
-	return path:match("_test%.go$")
-end
-
-local function related_go_file(path)
-	if is_test_file(path) then
-		return path:gsub("_test%.go$", ".go")
-	end
-
-	return path:gsub("%.go$", "_test.go")
+function M.setup(opts)
+	config.setup(opts)
 end
 
 function M.open()
-	local filepath = vim.api.nvim_buf_get_name(0)
+	go.open()
+end
 
-	local related = related_go_file(filepath)
-	local related_name = vim.fn.fnamemodify(related, ":t")
-
-	if exists(related) then
-		vim.cmd.edit(related)
-		-- local message = string.format("File: %s", related_name)
-		-- print(message)
-	else
-		vim.notify("Related file not found", vim.log.levels.INFO)
-		-- local message = string.format("Missing %s", related_name)
-		-- print(message)
-	end
+function M.create()
+	go.create()
 end
 
 return M
